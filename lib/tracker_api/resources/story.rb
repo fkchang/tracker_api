@@ -7,6 +7,7 @@ module TrackerApi
 
       attribute :accepted_at, DateTime
       attribute :comment_ids, Array[Integer]
+      attribute :comments, Array[TrackerApi::Resources::Comment]
       attribute :created_at, DateTime
       attribute :current_state, String # (accepted, delivered, finished, started, rejected, planned, unstarted, unscheduled)
       attribute :deadline, DateTime
@@ -43,6 +44,15 @@ module TrackerApi
           @tasks = Endpoints::Tasks.new(client).get(project_id, id, params)
         end
       end
+
+      def comments(params = {})
+        if @comments.any?
+          @comments
+        else
+          @comments = Endpoints::Comments.new(client).get(project_id, id, params)
+        end
+      end
+
     end
   end
 end
