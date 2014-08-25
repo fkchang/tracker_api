@@ -7,6 +7,7 @@ module TrackerApi
 
       attribute :account, TrackerApi::Resources::Account
       attribute :account_id, Integer
+      attribute :activities, Array[TrackerApi::Resources::Activity]
       attribute :atom_enabled, Boolean
       attribute :bugs_and_chores_are_estimatable, Boolean
       attribute :created_at, DateTime
@@ -89,6 +90,10 @@ module TrackerApi
       # @return [Story] Story with given id
       def story(story_id)
         Endpoints::Story.new(client).get(id, story_id)
+      end
+
+      def activities(params)
+        Endpoints::Activities.new(client).project_get(id, params)
       end
     end
   end

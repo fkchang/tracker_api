@@ -5,6 +5,7 @@ module TrackerApi
 
       attribute :client
 
+      attribute :activities, Array[TrackerApi::Resources::Activity]
       attribute :accepted_at, DateTime
       attribute :comment_ids, Array[Integer]
       attribute :comments, Array[TrackerApi::Resources::Comment]
@@ -22,6 +23,7 @@ module TrackerApi
       attribute :labels, Array[TrackerApi::Resources::Label]
       attribute :name, String
       attribute :owned_by_id, Integer # deprecated!
+      attribute :owner_ids, Array[Integer]
       attribute :owners, Array[TrackerApi::Resources::Person]
       attribute :planned_iteration_number, Integer
       attribute :project_id, Integer
@@ -50,6 +52,19 @@ module TrackerApi
           @comments
         else
           @comments = Endpoints::Comments.new(client).get(project_id, id, params)
+        end
+      end
+
+      # coz above will refetch any 0 length comments
+      def cached_comments
+        @comments
+      end
+
+      def activities(params = {})
+        if @activities.any?
+          @activities
+        else
+          @activities = Endpoints::Activities.new(client).get(project_id, id, params)
         end
       end
 
